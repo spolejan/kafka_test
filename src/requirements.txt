@@ -1,0 +1,4 @@
+ConfigParser
+requests
+kafka-python
+python-daemon
