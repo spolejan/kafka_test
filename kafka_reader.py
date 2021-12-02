@@ -1,13 +1,7 @@
 from kafka import KafkaConsumer, TopicPartition, KafkaProducer
-from configparser import ConfigParser
+from config_loader import load_config
 import json
-from db_worker import save_category, save_offer
-
-
-def load_config(section):
-    config = ConfigParser()
-    config.read('config.ini')
-    return config[section]
+from db_worker import DataWorker
 
 
 def read_kafka():
@@ -47,13 +41,14 @@ def json_deserializer(v):
 
 
 def consume_value(value):
+    worker = DataWorker()
     if value is None:
         return
     if value['metadata']['type'] == 'offer':
-        save_offer(value['payload'])
+        worker.save_offer(value['payload'])
         return
     if value['metadata']['type'] == 'category':
-        save_category(value['payload'])
+        worker.save_category(value['payload'])
         return
 
 
